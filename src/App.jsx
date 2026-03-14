@@ -2,12 +2,28 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+import {SignInWithGoogle, SignOut} from "./services/authentication.js"
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
 
-  return (
+  const [user, setUser] = useState(null);
+
+  const handleClick = () => {
+    SignInWithGoogle().then(result => {
+      setUser(result);
+    });
+  };
+
+  if (!user) {
+    return (
+      <div>
+        <button className="px-4 py-2 bg-red-200" onClick = {handleClick}>Sign In</button>    
+      </div>
+    )
+  } else {
+      return (
     <>
       <section id="center">
         <div className="hero">
@@ -116,6 +132,7 @@ function App() {
       <section id="spacer"></section>
     </>
   )
+  }
 }
 
 export default App
