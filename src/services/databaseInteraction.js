@@ -1,6 +1,51 @@
 import { db } from "./firebaseConfig.js";
-import { collection, doc, setDoc, addDoc, getDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc, getDoc, updateDoc, writeBatch } from "firebase/firestore";
+import Papa from "papaparse";
+import csvText from "../assets/snap_la.csv?raw";
 
+
+export async function seedLocationsFromCSV() {
+  const { data, errors } = Papa.parse(csvText, {
+    header: true,
+    skipEmptyLines: true,
+    dynamicTyping: true,
+  });
+
+  if (errors.length) {
+    console.warn("CSV parse warnings:", errors);
+  }
+
+  const BATCH_SIZE = 500;
+  for (let i = 0; i < data.length; i += BATCH_SIZE) {
+    const batch = writeBatch(db);
+    const chunk = data.slice(i, i + BATCH_SIZE);
+
+    for (const row of chunk) {
+      const docRef = doc(collection(db, "snapLocations"), String(row["Record ID"]));
+      batch.set(docRef, {
+        name: row["Store Name"]?.trim(),
+        type: row["Store Type"],
+        address: [row["Street Number"], row["Street Name"], row["Additional Address"]]
+          .filter(Boolean)
+          .join(" "),
+        city: row["City"],
+        state: row["State"],
+        zip: String(row["Zip Code"]),
+        county: row["County"],
+        lat: row["Latitude"],
+        lng: row["Longitude"],
+        authDate: row["Authorization Date"] || null,
+        endDate: row["End Date"] || null,
+        baseScore: row["Base Score"],
+      });
+    }
+
+    await batch.commit();
+    console.log(`Uploaded records ${i + 1}–${Math.min(i + BATCH_SIZE, data.length)}`);
+  }
+
+  console.log("Seed complete:", data.length, "locations uploaded.");
+}
 
 export async function storeLocation(locationData) {
 
