@@ -1,16 +1,7 @@
-# React + Vite
+# Welcome to our project for the LMUHackathon2026!
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A food desert is an area where residents don't have access to fresh foods like fruits and vegtibles. This website allows users to check their location and see what options are in their area. Users can also submit petitions for farmers markets, grociery stores, and other options to organize the community in an effort to bring more fresh food to urban areas.
 
-Currently, two official plugins are available:
+Backend pending buildout.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Please run npm install before running the local host.
