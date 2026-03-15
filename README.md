@@ -4,8 +4,6 @@ A food desert is an area where residents don't have access to fresh foods like f
 
 Backend pending buildout.
 
-Please run npm install before running the local host.
-
-Please obtain firebase and google maps api key, and fill in information in the .env file.
+Access site at this link: https://lmuh-ackathon2026.vercel.app/
 
 csv source: https://www.fns.usda.gov/snap/retailer-locator/data
