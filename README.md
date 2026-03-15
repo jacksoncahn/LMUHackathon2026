@@ -5,3 +5,5 @@ A food desert is an area where residents don't have access to fresh foods like f
 Backend pending buildout.
 
 Please run npm install before running the local host.
+
+csv source: https://www.fns.usda.gov/snap/retailer-locator/data
