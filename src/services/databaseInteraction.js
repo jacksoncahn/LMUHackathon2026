@@ -69,16 +69,28 @@ export async function storeLocation(locationData) {
 };
 
 export async function submitUserLocation({ address, type, lat, lng }) {
-  const locationsRef = collection(db, "userLocations");
-  const docRef = await addDoc(locationsRef, {
-    address,
-    type,
-    lat,
-    lng,
-    votes: 0,
-    submittedAt: new Date(),
-  });
-  return docRef.id;
+  // console.log("submitUserLocation called");
+  // try {
+  //   const locationsRef = collection(db, "userLocations");
+  //   console.log("locationsRef:", locationsRef);
+
+  //   const docRef = await addDoc(locationsRef, {
+  //     address,
+  //     type,
+  //     lat,
+  //     lng,
+  //     votes: 0,
+  //     submittedAt: new Date(),
+  //   });
+
+  //   console.log("Document written with ID:", docRef.id);
+  //   return docRef.id;
+
+  // } catch (e) {
+  //   console.error("Error adding document to Firestore:", e);
+  //   throw e;
+  // }
+  return
 }
 
 export async function fetchUserLocations() {

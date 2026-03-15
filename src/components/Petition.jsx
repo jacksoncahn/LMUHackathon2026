@@ -77,7 +77,7 @@ export default function Petition({ lat, lng, address }) {
                 <span style={{ fontWeight: 600 }}>{p.type}</span>
                 <span style={{ color: '#666', marginLeft: 6 }}>{p.address}</span>
               </div>
-              <button
+              {/* <button
                 onClick={() => handleVote(p.id)}
                 disabled={votedIds.has(p.id)}
                 style={{
@@ -88,7 +88,7 @@ export default function Petition({ lat, lng, address }) {
                 }}
               >
                 👍 {p.votes || 0}
-              </button>
+              </button> */}
             </div>
           ))}
         </div>
