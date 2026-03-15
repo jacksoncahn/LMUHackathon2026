@@ -6,4 +6,6 @@ Backend pending buildout.
 
 Please run npm install before running the local host.
 
+Please obtain firebase and google maps api key, and fill in information in the .env file.
+
 csv source: https://www.fns.usda.gov/snap/retailer-locator/data
