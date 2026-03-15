@@ -34,13 +34,8 @@ function App() {
     )
   } else {
       return (
-      <div style={{}}>
-        <div>
-          <SearchBar setSearchValue={setQuery} handleSearch={handleSearch} />
-          </div>
-        <div style={{}}>
-          <MapView />
-        </div>
+      <div style={{ position: 'relative' }}>
+        <MapView />
       </div>
   )
 }

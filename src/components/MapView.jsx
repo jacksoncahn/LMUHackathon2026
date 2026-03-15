@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, Fragment } from 'react'
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Circle } from '@react-google-maps/api'
 import Papa from 'papaparse'
 import snapCsvUrl from '../assets/snap_la.csv?url'
+import Petition from './Petition.jsx'
 
 const MAP_CENTER = { lat: 34.0522, lng: -118.2437 }
 const MAP_OPTIONS = { disableDefaultUI: false, clickableIcons: false }
@@ -59,6 +60,7 @@ export default function MapView() {
   const [searching, setSearching] = useState(false)
   const [searchPin, setSearchPin] = useState(null)   // { lat, lng }
   const [results, setResults] = useState(null)        // null = no search yet, [] = searched
+  const [fallback, setFallback] = useState([])        // top 3 highest-scoring within 1 mile when results is empty
 
   const mapRef = useRef(null)
 
@@ -106,6 +108,17 @@ export default function MapView() {
         .map((sc) => sc.loc)
 
       setResults(matches)
+
+      if (matches.length === 0) {
+        const top3 = storeCircles
+          .filter((sc) => sc.contains(point.lat, point.lng))
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 3)
+          .map((sc) => sc.loc)
+        setFallback(top3)
+      } else {
+        setFallback([])
+      }
     })
   }
 
@@ -120,7 +133,7 @@ export default function MapView() {
         style={{
           position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
           zIndex: 10, display: 'flex', gap: 6, background: 'white',
-          borderRadius: 8, padding: '6px 10px', boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+          borderRadius: 8, padding: '6px 10px', boxShadow: '0 2px 8px rgba(255, 255, 255, 0.25)',
           width: 'min(480px, 90vw)',
         }}
       >
@@ -162,11 +175,39 @@ export default function MapView() {
           </div>
 
           {results.length === 0 && (
-            <p style={{ fontSize: '0.82rem', color: '#666', margin: 0 }}>
-              There are no SNAP-authorized stores with a score of 4 or higher within
-              1 mile of this address. Try searching a nearby area.
-            </p>
+            <div>
+              <p style={{ fontSize: '0.82rem', color: '#666', margin: '0 0 8px' }}>
+                There may be no stores with a fresh food score greater than 3 within
+                1 mile of this address. Here are the next best options.
+              </p>
+              {fallback.map((loc) => (
+                <div
+                  key={loc['Record ID']}
+                  onClick={() => {
+                    setSelected(loc)
+                    mapRef.current?.panTo({ lat: parseFloat(loc.Latitude), lng: parseFloat(loc.Longitude) })
+                  }}
+                  style={{ borderTop: '1px solid #eee', paddingTop: 8, marginTop: 8, cursor: 'pointer' }}
+                >
+                  <strong style={{ fontSize: '0.88rem' }}>{loc['Store Name'].trim()}</strong>
+                  <p style={{ margin: '2px 0', fontSize: '0.78rem', color: '#555' }}>{loc['Store Type']}</p>
+                  <p style={{ margin: '2px 0', fontSize: '0.78rem' }}>
+                    {loc['Street Number']} {loc['Street Name'].trim()}, {loc['City']}, {loc['State']} {loc['Zip Code']}
+                  </p>
+                  <p style={{ margin: '4px 0 0', fontSize: '0.78rem', fontWeight: 'bold', color: scoreColor(loc['Base Score']) }}>
+                    Score: {loc['Base Score']} / 5
+                  </p>
+                </div>
+              ))}
+              {fallback.length === 0 && (
+                <p style={{ fontSize: '0.82rem', color: '#aaa', margin: 0 }}>No stores found within 1 mile.</p>
+              )}
+            </div>
           )}
+
+          <div style={{ marginTop: 12 }}>
+            <Petition lat={searchPin?.lat} lng={searchPin?.lng} address={query} />
+          </div>
 
           {results.map((loc) => (
             <div

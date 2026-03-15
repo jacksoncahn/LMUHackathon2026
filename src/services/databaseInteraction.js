@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig.js";
-import { collection, doc, setDoc, addDoc, getDoc, updateDoc, writeBatch } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, writeBatch, increment } from "firebase/firestore";
 import Papa from "papaparse";
 import csvText from "../assets/snap_la.csv?raw";
 
@@ -67,6 +67,29 @@ export async function storeLocation(locationData) {
     throw error;
   }
 };
+
+export async function submitUserLocation({ address, type, lat, lng }) {
+  const locationsRef = collection(db, "userLocations");
+  const docRef = await addDoc(locationsRef, {
+    address,
+    type,
+    lat,
+    lng,
+    votes: 0,
+    submittedAt: new Date(),
+  });
+  return docRef.id;
+}
+
+export async function fetchUserLocations() {
+  const snap = await getDocs(collection(db, "userLocations"));
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+export async function voteOnLocation(locationId) {
+  const ref = doc(db, "userLocations", locationId);
+  await updateDoc(ref, { votes: increment(1) });
+}
 
 export async function rateLocation(locationId, newRating) {
 
